@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Mobile</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+<script>
+if (localStorage.getItem("role") !== "owner") {
+    window.location.href = "../auth.html";
+}
+</script>
+
+<div class="navbar">
+    <h2>Edit Mobile</h2>
+    <a href="manage-mobiles.html">Back</a>
+</div>
+
+<div class="container">
+    <div class="card" style="max-width:600px;margin:30px auto;">
+        <h3>Update Mobile Details</h3>
+
+        <input type="text" id="brand" placeholder="Brand">
+        <input type="text" id="model" placeholder="Model">
+        <input type="number" id="price" placeholder="Price">
+
+        <select id="condition">
+            <option>Excellent</option>
+            <option>Good</option>
+            <option>Average</option>
+        </select>
+
+        <textarea id="description" placeholder="Description"></textarea>
+
+        <label for="image">Image URL:</label>
+        <input type="text" id="image" placeholder="https://example.com/image.jpg">
+        <div id="preview" style="margin-top:8px;"></div>
+
+        <button onclick="updateMobile()" style="margin-top:12px;padding:10px 16px;background:#111;color:#fff;border:none;border-radius:6px;cursor:pointer;">Update Mobile</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('image').addEventListener('input', function() {
+        const preview = document.getElementById('preview');
+        if (this.value) {
+            preview.innerHTML = `<img src="${this.value}" alt="preview" style="max-width:200px;border-radius:6px;" onerror="this.src='https://via.placeholder.com/200?text=Invalid+Image'">`;
+        } else {
+            preview.innerHTML = '';
+        }
+    });
+});
+</script>
+
+<script src="../js/edit-mobile.js"></script>
+</body>
+</html>

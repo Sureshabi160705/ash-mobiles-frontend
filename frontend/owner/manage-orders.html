@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Orders | Ash Mobile's</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        .orders-group { margin-bottom: 28px; }
+        .group-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+        .group-header h3 { margin:0; }
+        .orders-list { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:12px; }
+        .order-card p.desc { color: #555; margin:8px 0; }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <h2>Manage Orders</h2>
+    <a href="dashboard.html">Back</a>
+</div>
+
+<div class="container">
+    <div class="cards" id="orderList"></div>
+</div>
+
+<script src="manage-orders.js"></script>
+</body>
+</html>

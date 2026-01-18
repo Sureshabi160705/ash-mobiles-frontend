@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mobiles | Ash Mobile's</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("role") !== "customer") {
+    window.location.href = "../customer-login.html";
+}
+</script>
+
+<div class="navbar">
+    <h2>Ash Mobile's</h2>
+    <a href="dashboard.html">Back</a>
+</div>
+
+<div class="container">
+    <h2>Available Mobiles</h2>
+    <div class="cards" id="mobileList"></div>
+</div>
+
+<!-- 🔥 THESE TWO LINES MUST BE HERE -->
+<script src="mobiles.js"></script>
+
+</body>
+</html>

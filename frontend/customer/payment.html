@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+<script>
+if (localStorage.getItem("role") !== "customer") {
+    window.location.href = "../auth.html";
+}
+</script>
+
+<div class="container">
+    <h2>Payment</h2>
+
+    <div class="card" id="paymentBox"></div>
+</div>
+
+<script src="../js/payment.js"></script>
+</body>
+</html>

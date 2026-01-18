@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Mobile | Owner</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        .form-card { max-width: 700px; margin: 30px auto; }
+        .form-card textarea { min-height: 120px; }
+        .btn { margin-top: 12px; padding: 10px 16px; background: #111; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        .image-preview { margin-top: 8px; max-width: 200px; }
+        .image-preview img { max-width: 100%; border-radius: 6px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-card card">
+        <h2>Add Mobile</h2>
+
+        <input type="text" id="brand" placeholder="Brand">
+        <input type="text" id="model" placeholder="Model">
+        <input type="number" id="price" placeholder="Price">
+
+        <select id="condition">
+            <option>Excellent</option>
+            <option>Good</option>
+            <option>Average</option>
+        </select>
+
+        <textarea id="description" placeholder="Description"></textarea>
+
+        <label for="image">Image URL:</label>
+        <input type="text" id="image" placeholder="https://example.com/image.jpg">
+        <div class="image-preview" id="preview"></div>
+
+        <button class="btn" onclick="addMobile()">Add Mobile</button>
+
+        <p id="msg"></p>
+    </div>
+</div>
+
+<script>
+document.getElementById('image').addEventListener('input', function() {
+    const preview = document.getElementById('preview');
+    if (this.value) {
+        preview.innerHTML = `<img src="${this.value}" alt="preview" onerror="this.src='https://via.placeholder.com/200?text=Invalid+Image'">`;
+    } else {
+        preview.innerHTML = '';
+    }
+});
+</script>
+<script src="add-mobile.js"></script>
+</body>
+</html>

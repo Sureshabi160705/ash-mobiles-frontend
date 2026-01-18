@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Mobiles</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+<script>
+if (localStorage.getItem("role") !== "owner") {
+    window.location.href = "../auth.html";
+}
+</script>
+
+<div class="navbar">
+    <h2>Manage Mobiles</h2>
+    <a href="dashboard.html">Back</a>
+</div>
+
+<div class="container">
+    <div class="cards" id="mobileList"></div>
+</div>
+
+<script src="../js/manage-mobiles.js"></script>
+</body>
+</html>

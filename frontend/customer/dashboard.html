@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Dashboard | Ash Mobile's</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+<!-- 🔐 AUTH PROTECTION -->
+<script>
+    // If token not found, redirect to login
+    if (!localStorage.getItem("token") || localStorage.getItem("role") !== "customer") {
+        window.location.href = "../customer-login.html";
+    }
+</script>
+
+<!-- 🔹 NAVBAR -->
+<div class="navbar">
+    <h2>Ash Mobile's</h2>
+    <div>
+        <a href="mobiles.html">Mobiles</a>
+        <a href="orders.html">My Orders</a>
+        <button onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<!-- 🔹 MAIN CONTENT -->
+<div class="container">
+    <h2>Welcome, <span id="userName">Customer</span> 👋</h2>
+    <p>Browse second-hand mobiles and place your orders.</p>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Browse Mobiles</h3>
+            <p>View all available second-hand mobiles.</p>
+            <a href="mobiles.html">View Mobiles</a>
+        </div>
+
+        <div class="card">
+            <h3>My Orders</h3>
+            <p>Track your orders and delivery status.</p>
+            <a href="orders.html">View Orders</a>
+        </div>
+    </div>
+</div>
+
+<!-- 🔹 LOGOUT SCRIPT -->
+<script>
+function logout() {
+    localStorage.clear();
+    window.location.href = "../customer-login.html";
+}
+
+// Display user name on load
+document.addEventListener('DOMContentLoaded', function() {
+    const userName = localStorage.getItem('userName') || 'Customer';
+    document.getElementById('userName').textContent = userName;
+});
+</script>
+
+</body>
+</html>

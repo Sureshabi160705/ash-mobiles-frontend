@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Owner Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css" />
+  </head>
+  <body>
+    <script>
+      if (localStorage.getItem("role") !== "owner") {
+        window.location.href = "../auth.html";
+      }
+    </script>
+
+    <div class="navbar">
+      <h2>Ash Mobile's (Owner)</h2>
+      <div>
+        <a href="add-mobile.html">Add Mobile</a>
+        <a href="manage-orders.html">Manage Orders</a>
+        <a href="../index.html" onclick="localStorage.clear()">Logout</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>Welcome, <span id="userName">Owner</span> 👋</h2>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Add Mobile Advertisement</h3>
+          <p>Post second-hand mobile details</p>
+          <a href="add-mobile.html">Add Mobile</a>
+        </div>
+
+        <div class="card">
+          <h3>Manage Mobiles</h3>
+          <p>Edit or delete mobile ads</p>
+          <a href="manage-mobiles.html">Manage</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const userName = localStorage.getItem('userName') || 'Owner';
+        document.getElementById('userName').textContent = userName;
+      });
+    </script>

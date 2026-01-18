@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Orders | Ash Mobile's</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+<script>
+if (!localStorage.getItem("token")) {
+    window.location.href = "../customer-login.html";
+}
+</script>
+
+<div class="navbar">
+    <h2>My Orders</h2>
+    <a href="dashboard.html">Back</a>
+</div>
+
+<div class="container">
+    <div class="cards" id="orderList"></div>
+</div>
+
+<script src="order.js"></script>
+</body>
+</html>
