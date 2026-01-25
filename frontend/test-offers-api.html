@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Offers API</title>
+</head>
+<body>
+    <h1>Test Offers API</h1>
+    
+    <h2>GET All Offers</h2>
+    <button onclick="testGetOffers()">Get Offers</button>
+    <pre id="getResult"></pre>
+    
+    <h2>POST New Offer</h2>
+    <button onclick="testAddOffer()">Add Test Offer</button>
+    <pre id="postResult"></pre>
+    
+    <script>
+        async function testGetOffers() {
+            try {
+                const response = await fetch('https://ash-mobiles-backend.onrender.com/api/offers/');
+                const data = await response.json();
+                document.getElementById('getResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('getResult').textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        async function testAddOffer() {
+            try {
+                const newOffer = {
+                    title: "Test Offer " + new Date().getTime(),
+                    description: "Test Description",
+                    discount: "25%",
+                    icon: "🎯"
+                };
+                
+                const response = await fetch('https://ash-mobiles-backend.onrender.com/api/offers/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newOffer)
+                });
+                
+                const data = await response.json();
+                document.getElementById('postResult').textContent = JSON.stringify(data, null, 2);
+                
+                if (response.ok) {
+                    alert('Offer added successfully!');
+                    testGetOffers();
+                } else {
+                    alert('Failed: ' + data.message);
+                }
+            } catch (error) {
+                document.getElementById('postResult').textContent = 'Error: ' + error.message;
+                alert('Error: ' + error.message);
+            }
+        }
+        
+        // Load offers on page load
+        window.onload = testGetOffers;
+    </script>
+</body>
+</html>
