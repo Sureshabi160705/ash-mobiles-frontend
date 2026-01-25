@@ -1,22 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Owner Register</title>
     <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
 
-<div class="auth-box">
-    <h2>Owner Registration</h2>
+<div id="animationContainer" class="animation-container" style="display:none;"></div>
 
-    <input type="text" id="shop_name" placeholder="Shop Name">
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <input type="text" id="gst" placeholder="GST Number">
+<div class="auth-container">
+    <div class="auth-left">
+        <div class="illustration">🏪</div>
+        <h1>Become a Seller</h1>
+        <p>Register as an owner and start selling quality second-hand mobiles to customers!</p>
+    </div>
+    
+    <div class="auth-right">
+        <div class="auth-box">
+            <h2>Owner Registration</h2>
 
-    <button onclick="registerOwner()">Register</button>
+            <form id="ownerRegisterForm" onsubmit="handleOwnerRegisterSubmit(event)">
+                <input type="text" id="shop_name" placeholder="Shop Name" required>
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <input type="text" id="gst" placeholder="GST Number" required>
+                <button type="submit">Register</button>
+            </form>
 
-    <p>Already an owner? <a href="owner-login.html">Login</a></p>
+            <p id="msg"></p>
+            <p>Already an owner? <a href="owner-login.html">Login here</a></p>
+        </div>
+    </div>
 </div>
 
 <script src="js/auth.js"></script>

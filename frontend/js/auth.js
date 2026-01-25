@@ -82,7 +82,7 @@ async function loginCustomer() {
             localStorage.setItem('customer_email', data.email);
         }
         showMsg('Login successful', false);
-        setTimeout(() => window.location.href = 'customer/dashboard.html', 400);
+        playSuccessAnimation('customer/dashboard.html');
     } catch (err) {
         showMsg(err.message || 'Login error');
     }
@@ -113,8 +113,110 @@ async function loginOwner() {
             localStorage.setItem('customer_email', data.email);
         }
         showMsg('Login successful', false);
-        setTimeout(() => window.location.href = 'owner/dashboard.html', 400);
+        playSuccessAnimation('owner/dashboard.html');
     } catch (err) {
         showMsg(err.message || 'Login error');
     }
+}
+
+// FORM SUBMISSION HANDLERS (with Enter key support)
+function handleLoginSubmit(event) {
+    event.preventDefault();
+    loginCustomer();
+}
+
+function handleRegisterSubmit(event) {
+    event.preventDefault();
+    registerCustomer();
+}
+
+function handleOwnerLoginSubmit(event) {
+    event.preventDefault();
+    loginOwner();
+}
+
+function handleOwnerRegisterSubmit(event) {
+    event.preventDefault();
+    registerOwner();
+}
+
+// SUCCESS ANIMATION AFTER LOGIN
+function playSuccessAnimation(redirectUrl) {
+    const animContainer = document.getElementById('animationContainer');
+    if (!animContainer) return setTimeout(() => window.location.href = redirectUrl, 400);
+    
+    animContainer.style.display = 'flex';
+    animContainer.style.flexDirection = 'column';
+    animContainer.style.gap = '20px';
+    
+    // Create a simple loading animation with checkmark
+    const animContent = document.createElement('div');
+    animContent.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+    `;
+    
+    // Load Lottie player
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/@dotlottie/player@latest';
+    document.head.appendChild(script);
+    
+    script.onload = () => {
+        try {
+            // Create dotlottie-player element
+            const player = document.createElement('dotlottie-player');
+            player.id = 'lottieAnimation';
+            player.setAttribute('src', 'assets/animations/Ax2k12jKRd/manifest.json');
+            player.setAttribute('background', 'transparent');
+            player.setAttribute('speed', '1');
+            player.setAttribute('autoplay', 'true');
+            player.setAttribute('loop', 'false');
+            player.style.width = '300px';
+            player.style.height = '300px';
+            
+            animContent.innerHTML = '';
+            animContent.appendChild(player);
+            animContainer.innerHTML = '';
+            animContainer.appendChild(animContent);
+            
+            // Add message
+            const message = document.createElement('div');
+            message.textContent = 'Login Successful!';
+            message.style.cssText = 'font-size: 24px; color: #ff9800; font-weight: bold; text-align: center;';
+            animContainer.appendChild(message);
+        } catch (e) {
+            console.error('Animation error:', e);
+            // Fallback to simple checkmark
+            animContent.innerHTML = `
+                <div style="font-size: 80px; animation: scaleIn 0.6s ease-out;">✓</div>
+                <div style="font-size: 24px; color: #ff9800; font-weight: bold;">Login Successful!</div>
+            `;
+            animContainer.innerHTML = '';
+            animContainer.appendChild(animContent);
+        }
+        
+        // Navigate after animation completes
+        setTimeout(() => {
+            window.location.href = redirectUrl;
+        }, 3000);
+    };
+    
+    script.onerror = () => {
+        console.error('Failed to load Lottie');
+        // Fallback to simple checkmark
+        animContent.innerHTML = `
+            <div style="font-size: 80px; animation: scaleIn 0.6s ease-out;">✓</div>
+            <div style="font-size: 24px; color: #ff9800; font-weight: bold;">Login Successful!</div>
+        `;
+        animContainer.innerHTML = '';
+        animContainer.appendChild(animContent);
+        
+        // Navigate after animation completes
+        setTimeout(() => {
+            window.location.href = redirectUrl;
+        }, 2000);
+    };
 }

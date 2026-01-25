@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Owner Login</title>
     <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
 
-<div class="auth-box">
-    <h2>Owner Login</h2>
+<div id="animationContainer" class="animation-container" style="display:none;"></div>
 
-    <input type="email" id="owner_email" placeholder="Email">
-    <input type="password" id="owner_password" placeholder="Password">
+<div class="auth-container">
+    <div class="auth-left">
+        <div class="illustration">🏪</div>
+        <h1>Owner Dashboard</h1>
+        <p>Manage your mobile inventory, track orders, and grow your business with Ash Mobiles!</p>
+    </div>
+    
+    <div class="auth-right">
+        <div class="auth-box">
+            <h2>Owner Login</h2>
 
-    <button onclick="loginOwner()">Login</button>
+            <form id="ownerLoginForm" onsubmit="handleOwnerLoginSubmit(event)">
+                <input type="email" id="owner_email" placeholder="Email Address" required>
+                <input type="password" id="owner_password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
 
-    <p id="msg"></p>
-    <p>New owner? <a href="owner-register.html">Register</a></p>
+            <p id="msg"></p>
+            <p>New owner? <a href="owner-register.html">Register here</a></p>
+        </div>
+    </div>
 </div>
 
 <script src="js/auth.js"></script>

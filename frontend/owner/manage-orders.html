@@ -1,28 +1,421 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Orders | Ash Mobile's</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <style>
-        .orders-group { margin-bottom: 28px; }
-        .group-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-        .group-header h3 { margin:0; }
-        .orders-list { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:12px; }
-        .order-card p.desc { color: #555; margin:8px 0; }
+        .orders-table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .orders-table thead {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+
+        .orders-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #ff9800;
+        }
+
+        .orders-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        .orders-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .orders-table tbody tr:hover {
+            background: #fff9e6;
+            box-shadow: inset 0 0 5px rgba(255, 152, 0, 0.1);
+        }
+
+        .order-id-link {
+            color: #ff9800;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .order-id-link:hover {
+            color: #f57c00;
+            border-bottom-color: #ff9800;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-confirmed {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .status-shipped {
+            background: #bbdefb;
+            color: #1565c0;
+        }
+
+        .status-delivered {
+            background: #a5d6a7;
+            color: #1b5e20;
+        }
+
+        .status-cancelled {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .payment-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .payment-completed {
+            background: #4caf50;
+            color: white;
+        }
+
+        .payment-pending {
+            background: #ff9800;
+            color: white;
+        }
+
+        .payment-failed {
+            background: #f44336;
+            color: white;
+        }
+
+        .no-data-message {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 16px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ff9800;
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #ff9800;
+        }
+
+        .detail-section h3 {
+            margin: 0 0 12px 0;
+            color: #333;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .detail-row strong {
+            color: #333;
+            min-width: 120px;
+        }
+
+        .detail-row span {
+            flex: 1;
+            text-align: right;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-buttons select {
+            flex: 1;
+            min-width: 150px;
+            padding: 10px;
+            border: 2px solid #ff9800;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            background: white;
+        }
+
+        .action-buttons button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-delete {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #b71c1c;
+        }
+
+        .payment-screenshot {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            border: 2px dashed #ff9800;
+        }
+
+        .payment-screenshot img {
+            max-width: 200px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid #ff9800;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ff9800;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-box button {
+            padding: 12px 20px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .search-box button:hover {
+            background: #f57c00;
+        }
     </style>
 </head>
 <body>
 
 <div class="navbar">
     <h2>Manage Orders</h2>
-    <a href="dashboard.html">Back</a>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="nav-menu" id="navMenu">
+        <a href="dashboard.html">Back</a>
+    </div>
 </div>
 
 <div class="container">
-    <div class="cards" id="orderList"></div>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search by Order ID, Customer Name, Email...">
+        <button onclick="searchOrders()">Search</button>
+        <button onclick="clearSearch()" style="background: #666;">Clear</button>
+    </div>
+
+    <div id="orderListContainer" class="orders-table-container">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th style="width: 8%;">S.No</th>
+                    <th style="width: 15%;">Order ID</th>
+                    <th style="width: 20%;">Customer</th>
+                    <th style="width: 20%;">Product</th>
+                    <th style="width: 12%;">Price</th>
+                    <th style="width: 15%;">Order Status</th>
+                    <th style="width: 10%;">Payment</th>
+                </tr>
+            </thead>
+            <tbody id="orderList">
+                <tr>
+                    <td colspan="7" class="no-data-message">Loading orders...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Order Detail Modal -->
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Order Details</h2>
+            <button class="close-btn" onclick="closeOrderModal()">&times;</button>
+        </div>
+        <div id="orderDetailsContent"></div>
+    </div>
 </div>
 
 <script src="manage-orders.js"></script>
+
+<script>
+function toggleMenu() {
+    const navMenu = document.getElementById('navMenu');
+    navMenu.classList.toggle('active');
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(event) {
+    const navbar = document.querySelector('.navbar');
+    if (navbar && !navbar.contains(event.target)) {
+        const navMenu = document.getElementById('navMenu');
+        navMenu.classList.remove('active');
+    }
+});
+
+function initDarkMode() {
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    const toggle = document.getElementById('darkModeToggle');
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        if (toggle) toggle.textContent = '☀️';
+    } else {
+        document.body.classList.remove('dark-mode');
+        if (toggle) toggle.textContent = '🌙';
+    }
+}
+
+function toggleDarkMode() {
+    const isDarkMode = document.body.classList.toggle('dark-mode');
+    const toggle = document.getElementById('darkModeToggle');
+    localStorage.setItem('darkMode', isDarkMode);
+    if (toggle) toggle.textContent = isDarkMode ? '☀️' : '🌙';
+}
+
+document.addEventListener('DOMContentLoaded', initDarkMode);
+
+function closeOrderModal() {
+    document.getElementById('orderModal').classList.remove('active');
+}
+
+// Close modal when clicking outside content
+document.getElementById('orderModal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeOrderModal();
+    }
+});
+</script>
 </body>
 </html>

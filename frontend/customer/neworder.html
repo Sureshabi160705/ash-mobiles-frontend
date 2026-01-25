@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Order | Ash Mobiles</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .order-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .order-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #ff9800;
+            padding-bottom: 20px;
+        }
+
+        .order-header h2 {
+            color: #ff9800;
+            margin: 0 0 10px 0;
+        }
+
+        .product-summary {
+            background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 50%, #fff3e0 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid #ff9800;
+        }
+
+        .product-summary h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .product-summary p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .form-section h3 {
+            color: #333;
+            border-bottom: 2px solid #ff9800;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff9800;
+            box-shadow: 0 0 8px rgba(255, 152, 0, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .price-section {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #ff9800;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .price-row.total {
+            border-top: 2px solid #ff9800;
+            padding-top: 10px;
+            font-weight: bold;
+            color: #ff9800;
+            font-size: 18px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .button-group button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-proceed {
+            background: linear-gradient(135deg, #ff9800 0%, #ffb333 100%);
+            color: white;
+        }
+
+        .btn-proceed:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 152, 0, 0.3);
+        }
+
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background: #d0d0d0;
+        }
+
+        .error-msg {
+            color: crimson;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .success-msg {
+            color: green;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .order-container {
+                margin: 20px 10px;
+                padding: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("role") !== "customer") {
+    window.location.href = "../customer-login.html";
+}
+</script>
+
+<div class="navbar">
+    <h2>Ash Mobiles</h2>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="nav-menu" id="navMenu">
+        <a href="mobiles.html">Back to Mobiles</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="order-container">
+        <div class="order-header">
+            <h2>📱 Place Your Order</h2>
+            <p>Complete your purchase in a few simple steps</p>
+        </div>
+
+        <!-- Product Summary -->
+        <div class="product-summary" id="productSummary">
+            <h3>Product Details</h3>
+            <p id="productInfo"></p>
+        </div>
+
+        <!-- Customer Details Form -->
+        <form id="orderForm">
+            <!-- Customer Details Section -->
+            <div class="form-section">
+                <h3>👤 Your Details</h3>
+                
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" placeholder="Enter your full name" required>
+                    <div id="fullNameError" class="error-msg"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                    <div id="emailError" class="error-msg"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" placeholder="Enter your 10-digit mobile number" pattern="[0-9]{10}" required>
+                    <div id="phoneError" class="error-msg"></div>
+                </div>
+            </div>
+
+            <!-- Shipping Address Section -->
+            <div class="form-section">
+                <h3>📍 Shipping Address</h3>
+                
+                <div class="form-group">
+                    <label for="address">Street Address *</label>
+                    <input type="text" id="address" placeholder="House number, street name" required>
+                    <div id="addressError" class="error-msg"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">City *</label>
+                    <input type="text" id="city" placeholder="Enter your city" required>
+                    <div id="cityError" class="error-msg"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="state">State *</label>
+                    <input type="text" id="state" placeholder="Enter your state" required>
+                    <div id="stateError" class="error-msg"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="pincode">Pincode *</label>
+                    <input type="text" id="pincode" placeholder="Enter 6-digit pincode" pattern="[0-9]{6}" required>
+                    <div id="pincodeError" class="error-msg"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Special Instructions (Optional)</label>
+                    <textarea id="notes" placeholder="Any special delivery instructions..."></textarea>
+                </div>
+            </div>
+
+            <!-- Price Summary -->
+            <div class="price-section">
+                <div class="price-row">
+                    <span>Product Price:</span>
+                    <span id="productPrice">₹0</span>
+                </div>
+                <div class="price-row">
+                    <span>Shipping Charges:</span>
+                    <span>₹0</span>
+                </div>
+                <div class="price-row total">
+                    <span>Total Amount:</span>
+                    <span id="totalPrice">₹0</span>
+                </div>
+            </div>
+
+            <!-- Button Group -->
+            <div class="button-group">
+                <button type="button" class="btn-cancel" onclick="window.history.back()">Cancel</button>
+                <button type="submit" class="btn-proceed">Proceed to Payment ✓</button>
+            </div>
+
+            <div id="formMessage"></div>
+        </form>
+    </div>
+</div>
+
+<script src="neworder.js"></script>
+
+<script>
+function toggleMenu() {
+    const navMenu = document.getElementById('navMenu');
+    navMenu.classList.toggle('active');
+}
+
+document.addEventListener('click', function(event) {
+    const navbar = document.querySelector('.navbar');
+    if (navbar && !navbar.contains(event.target)) {
+        const navMenu = document.getElementById('navMenu');
+        navMenu.classList.remove('active');
+    }
+});
+
+function initDarkMode() {
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    const toggle = document.getElementById('darkModeToggle');
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        if (toggle) toggle.textContent = '☀️';
+    } else {
+        document.body.classList.remove('dark-mode');
+        if (toggle) toggle.textContent = '🌙';
+    }
+}
+
+function toggleDarkMode() {
+    const isDarkMode = document.body.classList.toggle('dark-mode');
+    const toggle = document.getElementById('darkModeToggle');
+    localStorage.setItem('darkMode', isDarkMode);
+    if (toggle) toggle.textContent = isDarkMode ? '☀️' : '🌙';
+}
+
+document.addEventListener('DOMContentLoaded', initDarkMode);
+</script>
+
+</body>
+</html>

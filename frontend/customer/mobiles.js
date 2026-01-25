@@ -26,7 +26,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                         '${mobile.brand}',
                         '${mobile.model}',
                         ${mobile.price},
-                        '${mobile.description || ''}'
+                        '${mobile.description || ''}',
+                        '${mobile._id}'
                     )">Buy Now</button>
                 </div>
             `;
@@ -39,34 +40,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 
-function placeOrder(brand, model, price, description) {
-
-    const email = localStorage.getItem("customer_email");
-
-    if (!email) {
-        alert("Please login again");
-        window.location.href = "../customer-login.html";
-        return;
-    }
-
-    fetch("http://127.0.0.1:5000/api/orders/place", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            customer_email: email,
-            brand: brand,
-            model: model,
-            price: price,
-            description: description
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message);
-        window.location.href = "orders.html";
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Order failed");
+function placeOrder(brand, model, price, description, mobileId) {
+    // Redirect to new order page with product details in URL
+    const params = new URLSearchParams({
+        brand,
+        model,
+        price,
+        description,
+        id: mobileId
     });
+    window.location.href = `neworder.html?${params.toString()}`;
 }

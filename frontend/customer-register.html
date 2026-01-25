@@ -1,25 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Register</title>
     <link rel="stylesheet" href="css/auth.css">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 <body>
 
+<div id="animationContainer" class="animation-container" style="display:none;"></div>
+
 <div class="auth-container">
-    <div class="auth-box">
-        <h2>Customer Registration</h2>
+    <div class="auth-left">
+        <div class="illustration">📱</div>
+        <h1>Join Ash Mobiles</h1>
+        <p>Create your account and start shopping for quality second-hand mobiles today!</p>
+    </div>
+    
+    <div class="auth-right">
+        <div class="auth-box">
+            <h2>Customer Registration</h2>
 
-        <input type="text" id="name" placeholder="Full Name">
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Password">
+            <form id="registerForm" onsubmit="handleRegisterSubmit(event)">
+                <input type="text" id="name" placeholder="Full Name" required>
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Register</button>
+            </form>
 
-        <button onclick="registerCustomer()">Register</button>
+            <p id="msg"></p>
 
-        <p id="msg"></p>
-
-        <p>Already registered? <a href="customer-login.html">Login</a></p>
+            <p>Already registered? <a href="customer-login.html">Login here</a></p>
+        </div>
     </div>
 </div>
 

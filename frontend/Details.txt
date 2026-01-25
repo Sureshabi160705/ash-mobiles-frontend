@@ -1,0 +1,10 @@
+phone number = 9500553448
+email = suresh.official.co@gmail.com
+address = 136/14m2,South Colony ,Kumarapalayam (638183), Namakkal , Tamilnadu
+gmap iframe link = <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d244.41070877724317!2d77.69303552665484!3d11.438627122137172!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba9682c3ed35ab1%3A0x5c4ea7abeacf1286!2sKomarapalayam%2C%20Tamil%20Nadu%20638183!5e0!3m2!1sen!2sin!4v1768840765177!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+Google pay = 9500553448
+Upi id = 9500553448@ptyes
+Courier service = ST COURIER, FRENCH EXPRESS ,DTCP COURIER
+testing warrenty = 3 Days
+Watsapp Direct button = 9500553448 (Massage = Hi Bro..!Can U Get the Deteils More..?)
+Instagram = "https://www.instagram.com/smaily._.suresh._.as?igsh=MXRobHdrOTVhZjNiZQ=="

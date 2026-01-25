@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Owner Dashboard</title>
     <link rel="stylesheet" href="../css/dashboard.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
   </head>
   <body>
     <script>
       if (localStorage.getItem("role") !== "owner") {
-        window.location.href = "../auth.html";
+        window.location.href = "../owner-login.html";
       }
     </script>
 
     <div class="navbar">
       <h2>Ash Mobile's (Owner)</h2>
-      <div>
+      <button class="dark-mode-toggle" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <div class="nav-menu" id="navMenu">
         <a href="add-mobile.html">Add Mobile</a>
         <a href="manage-orders.html">Manage Orders</a>
         <a href="../index.html" onclick="localStorage.clear()">Logout</a>
@@ -22,6 +27,94 @@
 
     <div class="container">
       <h2>Welcome, <span id="userName">Owner</span> 👋</h2>
+
+      <!-- SHOP STATUS TOGGLE -->
+      <div class="shop-status-card">
+        <h3>Shop Status</h3>
+        <div class="status-toggle-container">
+          <div class="status-display" id="statusDisplay">
+            <span class="status-icon">🟢</span>
+            <span class="status-text">Shop is Live</span>
+          </div>
+          <button class="status-toggle-btn" onclick="toggleShopStatus()" id="toggleBtn">Close Shop</button>
+        </div>
+      </div>
+
+      <!-- ANALYTICS SECTION -->
+      <div class="analytics-container">
+        <h2>📊 Business Analytics</h2>
+        
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-content">
+              <div class="stat-number" id="totalOrdersStat">0</div>
+              <div class="stat-label">Total Orders</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-content">
+              <div class="stat-number" id="thisMonthStat">0</div>
+              <div class="stat-label">This Month</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-content">
+              <div class="stat-number" id="lastMonthStat">0</div>
+              <div class="stat-label">Last Month</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">👁️</div>
+            <div class="stat-content">
+              <div class="stat-number" id="totalViewsStat">0</div>
+              <div class="stat-label">Total Views</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-content">
+              <div class="stat-number" id="pendingOrdersStat">0</div>
+              <div class="stat-label">Pending Orders</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">📱</div>
+            <div class="stat-content">
+              <div class="stat-number" id="totalProductsStat">0</div>
+              <div class="stat-label">Active Products</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHARTS SECTION -->
+        <div class="charts-section">
+          <div class="chart-container">
+            <h3>Orders Comparison</h3>
+            <canvas id="ordersChart"></canvas>
+          </div>
+          <div class="chart-container">
+            <h3>Order Status Distribution</h3>
+            <canvas id="statusChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Top Products Section -->
+        <div class="top-products-section">
+          <h3>🔥 Top Viewed Products</h3>
+          <div class="top-products-list" id="topProductsList">
+            <p style="text-align: center; color: #999;">Loading...</p>
+          </div>
+        </div>
+      </div>
 
       <div class="cards">
         <div class="card">
@@ -35,12 +128,369 @@
           <p>Edit or delete mobile ads</p>
           <a href="manage-mobiles.html">Manage</a>
         </div>
+
+        <div class="card">
+          <h3>Manage Offers</h3>
+          <p>Add, edit, or delete promotional offers</p>
+          <button onclick="toggleOffersPanel()" style="background: linear-gradient(135deg, #ff9800, #ffb333); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 14px; width: 100%;">Manage Offers</button>
+        </div>
+      </div>
+
+      <!-- OFFERS MANAGEMENT PANEL -->
+      <div id="offersPanel" class="offers-management-panel" style="display: none;">
+        <h3>Manage Offers</h3>
+
+        <!-- ADD NEW OFFER FORM -->
+        <div class="offer-form">
+          <h4>Add New Offer</h4>
+          <div class="form-group">
+            <label for="offerTitle">Offer Title:</label>
+            <input type="text" id="offerTitle" placeholder="e.g., Summer Sale">
+          </div>
+          <div class="form-group">
+            <label for="offerDescription">Description:</label>
+            <input type="text" id="offerDescription" placeholder="e.g., Get 30% off on all phones">
+          </div>
+          <div class="form-group">
+            <label for="offerDiscount">Discount:</label>
+            <input type="text" id="offerDiscount" placeholder="e.g., 30%">
+          </div>
+          <div class="form-group">
+            <label for="offerIcon">Icon (Emoji):</label>
+            <input type="text" id="offerIcon" placeholder="e.g., 🎉" maxlength="2">
+          </div>
+          <button onclick="addNewOffer()" class="btn-primary">Add Offer</button>
+        </div>
+
+        <!-- EXISTING OFFERS LIST -->
+        <div class="offers-list">
+          <h4>Current Offers</h4>
+          <div id="offersListContainer"></div>
+        </div>
+
+        <button onclick="toggleOffersPanel()" class="btn-close-panel">Close</button>
       </div>
     </div>
 
+    <script src="../js/offers-config.js"></script>
     <script>
+      if (localStorage.getItem("role") !== "owner") {
+        window.location.href = "../owner-login.html";
+      }
+
+      function toggleMenu() {
+        const navMenu = document.getElementById('navMenu');
+        navMenu.classList.toggle('active');
+      }
+
+      // Close menu when clicking outside
+      document.addEventListener('click', function(event) {
+        const navbar = document.querySelector('.navbar');
+        if (navbar && !navbar.contains(event.target)) {
+          const navMenu = document.getElementById('navMenu');
+          navMenu.classList.remove('active');
+        }
+      });
+
+      function initDarkMode() {
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        const toggle = document.getElementById('darkModeToggle');
+        if (isDarkMode) {
+            document.body.classList.add('dark-mode');
+            if (toggle) toggle.textContent = '☀️';
+        } else {
+            document.body.classList.remove('dark-mode');
+            if (toggle) toggle.textContent = '🌙';
+        }
+      }
+
+      function toggleDarkMode() {
+        const isDarkMode = document.body.classList.toggle('dark-mode');
+        const toggle = document.getElementById('darkModeToggle');
+        localStorage.setItem('darkMode', isDarkMode);
+        if (toggle) toggle.textContent = isDarkMode ? '☀️' : '🌙';
+      }
+
       document.addEventListener('DOMContentLoaded', function() {
         const userName = localStorage.getItem('userName') || 'Owner';
         document.getElementById('userName').textContent = userName;
+        
+        // Initialize dark mode
+        initDarkMode();
+        
+        // Initialize shop status
+        initializeShopStatus();
+        
+        // Display existing offers
+        displayExistingOffers();
+
+        // Load analytics
+        loadAnalytics();
+
+        // Refresh analytics every 30 seconds
+        setInterval(loadAnalytics, 30000);
       });
+      
+      function toggleShopStatus() {
+        const currentStatus = localStorage.getItem('shopStatus') === 'open' ? 'open' : 'closed';
+        const newStatus = currentStatus === 'open' ? 'closed' : 'open';
+        localStorage.setItem('shopStatus', newStatus);
+        updateShopStatusDisplay();
+      }
+      
+      function updateShopStatusDisplay() {
+        const status = localStorage.getItem('shopStatus') === 'open' ? 'open' : 'closed';
+        const statusDisplay = document.getElementById('statusDisplay');
+        const toggleBtn = document.getElementById('toggleBtn');
+        
+        if (status === 'open') {
+          statusDisplay.innerHTML = '<span class="status-icon">🟢</span><span class="status-text">Shop is Live</span>';
+          toggleBtn.textContent = 'Close Shop';
+          statusDisplay.classList.add('status-open');
+          statusDisplay.classList.remove('status-closed');
+        } else {
+          statusDisplay.innerHTML = '<span class="status-icon">🔴</span><span class="status-text">Shop is Closed</span>';
+          toggleBtn.textContent = 'Open Shop';
+          statusDisplay.classList.add('status-closed');
+          statusDisplay.classList.remove('status-open');
+        }
+      }
+      
+      function initializeShopStatus() {
+        if (!localStorage.getItem('shopStatus')) {
+          localStorage.setItem('shopStatus', 'open');
+        }
+        updateShopStatusDisplay();
+      }
+
+      // Offers Management Functions
+      function toggleOffersPanel() {
+        const panel = document.getElementById('offersPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        if (panel.style.display === 'block') {
+          displayExistingOffers();
+        }
+      }
+
+      function addNewOffer() {
+        const title = document.getElementById('offerTitle').value.trim();
+        const description = document.getElementById('offerDescription').value.trim();
+        const discount = document.getElementById('offerDiscount').value.trim();
+        const icon = document.getElementById('offerIcon').value.trim();
+
+        if (!title || !description || !discount || !icon) {
+          alert('Please fill in all fields');
+          return;
+        }
+
+        const newOffer = {
+          title,
+          description,
+          discount,
+          icon
+        };
+
+        addOffer(newOffer);
+        
+        // Clear form
+        document.getElementById('offerTitle').value = '';
+        document.getElementById('offerDescription').value = '';
+        document.getElementById('offerDiscount').value = '';
+        document.getElementById('offerIcon').value = '';
+
+        alert('Offer added successfully!');
+        displayExistingOffers();
+      }
+
+      function displayExistingOffers() {
+        const offers = getOffers();
+        const container = document.getElementById('offersListContainer');
+        
+        if (offers.length === 0) {
+          container.innerHTML = '<p style="color: #666;">No offers yet. Add your first offer!</p>';
+          return;
+        }
+
+        container.innerHTML = offers.map(offer => `
+          <div class="offer-item" style="background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #ff9800;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <div>
+                <p style="margin: 5px 0; font-weight: bold;">${offer.icon} ${offer.title}</p>
+                <p style="margin: 5px 0; color: #666;">${offer.description}</p>
+                <p style="margin: 5px 0; background: #ffc947; display: inline-block; padding: 3px 8px; border-radius: 3px; font-weight: bold;">${offer.discount} OFF</p>
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <button onclick="deleteOfferHandler(${offer.id})" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">Delete</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function deleteOfferHandler(id) {
+        if (confirm('Are you sure you want to delete this offer?')) {
+          deleteOffer(id);
+          alert('Offer deleted successfully!');
+          displayExistingOffers();
+        }
+      }
+
+      // ANALYTICS FUNCTIONS
+      let ordersChartInstance = null;
+      let statusChartInstance = null;
+
+      function loadAnalytics() {
+        fetch('http://localhost:5000/api/analytics/summary')
+          .then(response => response.json())
+          .then(data => {
+            // Update stat cards
+            document.getElementById('totalOrdersStat').textContent = data.total_orders;
+            document.getElementById('thisMonthStat').textContent = data.this_month_orders;
+            document.getElementById('lastMonthStat').textContent = data.last_month_orders;
+            document.getElementById('totalViewsStat').textContent = data.total_views;
+            document.getElementById('pendingOrdersStat').textContent = data.pending_orders;
+            document.getElementById('totalProductsStat').textContent = data.total_products;
+
+            // Update charts
+            updateOrdersChart(data.this_month_orders, data.last_month_orders);
+            updateStatusChart(data.pending_orders, data.total_orders - data.pending_orders);
+
+            // Update top products
+            displayTopProducts(data.top_products);
+          })
+          .catch(error => {
+            console.error('Analytics error:', error);
+          });
+      }
+
+      function updateOrdersChart(thisMonth, lastMonth) {
+        const ctx = document.getElementById('ordersChart').getContext('2d');
+        
+        if (ordersChartInstance) {
+          ordersChartInstance.destroy();
+        }
+
+        ordersChartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Last Month', 'This Month'],
+            datasets: [{
+              label: 'Orders',
+              data: [lastMonth, thisMonth],
+              backgroundColor: [
+                'rgba(255, 152, 0, 0.7)',
+                'rgba(255, 179, 51, 0.9)'
+              ],
+              borderColor: [
+                'rgba(255, 152, 0, 1)',
+                'rgba(255, 179, 51, 1)'
+              ],
+              borderWidth: 2,
+              borderRadius: 6,
+              padding: 15
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: {
+                display: true,
+                labels: {
+                  color: '#666',
+                  font: { size: 12, weight: 'bold' }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  color: '#666',
+                  stepSize: 1
+                },
+                grid: {
+                  color: 'rgba(255, 152, 0, 0.1)'
+                }
+              },
+              x: {
+                ticks: {
+                  color: '#666'
+                },
+                grid: {
+                  display: false
+                }
+              }
+            }
+          }
+        });
+      }
+
+      function updateStatusChart(pending, completed) {
+        const ctx = document.getElementById('statusChart').getContext('2d');
+        
+        if (statusChartInstance) {
+          statusChartInstance.destroy();
+        }
+
+        statusChartInstance = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Pending', 'Completed'],
+            datasets: [{
+              data: [pending, completed],
+              backgroundColor: [
+                'rgba(255, 193, 7, 0.8)',
+                'rgba(76, 175, 80, 0.8)'
+              ],
+              borderColor: [
+                'rgba(255, 193, 7, 1)',
+                'rgba(76, 175, 80, 1)'
+              ],
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  color: '#666',
+                  font: { size: 12, weight: 'bold' },
+                  padding: 15
+                }
+              }
+            }
+          }
+        });
+      }
+
+      function displayTopProducts(products) {
+        const container = document.getElementById('topProductsList');
+        
+        if (!products || products.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: #999;">No products yet</p>';
+          return;
+        }
+
+        container.innerHTML = products.map(product => `
+          <div class="product-item">
+            <div class="product-rank">
+              <span class="rank-number">#${product.rank}</span>
+            </div>
+            <div class="product-details">
+              <div class="product-name">${product.brand} ${product.model}</div>
+              <div class="product-price">₹${product.price}</div>
+            </div>
+            <div class="product-views">
+              <div class="views-count">${product.views} views</div>
+              <div class="views-bar">
+                <div class="views-fill" style="width: ${Math.min((product.views / Math.max(...products.map(p => p.views), 1)) * 100, 100)}%"></div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
     </script>

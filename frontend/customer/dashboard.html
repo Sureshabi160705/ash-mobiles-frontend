@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Dashboard | Ash Mobile's</title>
     <link rel="stylesheet" href="../css/dashboard.css">
 </head>
@@ -18,7 +19,13 @@
 <!-- 🔹 NAVBAR -->
 <div class="navbar">
     <h2>Ash Mobile's</h2>
-    <div>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+    <div class="shop-status-badge" id="shopStatusBadge">
+        <span class="status-indicator">🟢</span>
+        <span class="status-label">Shop is Live</span>
+    </div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="nav-menu" id="navMenu">
         <a href="mobiles.html">Mobiles</a>
         <a href="orders.html">My Orders</a>
         <button onclick="logout()">Logout</button>
@@ -43,6 +50,103 @@
             <a href="orders.html">View Orders</a>
         </div>
     </div>
+
+    <!-- � OFFERS SECTION -->
+    <div class="offers-section">
+        <h2>🎁 Current Offers</h2>
+        <div class="offers-grid" id="offersGrid">
+            <p>Loading offers...</p>
+        </div>
+    </div>
+
+    <!-- �🏪 STORE INFORMATION SECTION -->
+    <div class="store-section">
+        
+        <!-- About Our Store -->
+        <div class="store-info-grid">
+            <div class="card store-card">
+                <h3>📍 About Our Store</h3>
+                <div id="aboutStoreDetails">
+                    <p>Loading store information...</p>
+                </div>
+            </div>
+
+            <!-- Shop Hours -->
+            <div class="card store-card hours-card">
+                <h3>🕐 Shop Hours</h3>
+                <div class="hours-content">
+                    <div class="hours-item">
+                        <span class="day">📅 Weekdays</span>
+                        <span class="status open" id="weekdaysStatus">Open</span>
+                    </div>
+                    <div class="hours-item">
+                        <span class="day">📅 Saturday</span>
+                        <span class="status open" id="saturdayStatus">Open</span>
+                    </div>
+                    <div class="hours-item">
+                        <span class="day">📅 Sunday</span>
+                        <span class="status closed" id="sundayStatus">Closed</span>
+                    </div>
+                </div>
+                <p class="note-text" id="hoursNote">Weekdays: Monday - Friday</p>
+            </div>
+
+            <!-- Store Location Map -->
+            <div class="card store-card">
+                <h3>🗺️ Store Location</h3>
+                <iframe 
+                    id="storeMap"
+                    width="100%" 
+                    height="250" 
+                    style="border:none;border-radius:6px;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="card store-card">
+                <h3>💳 Payment Details</h3>
+                <div id="paymentDetails">
+                    <p>Loading payment information...</p>
+                </div>
+            </div>
+
+            <!-- Shipping Details -->
+            <div class="card store-card">
+                <h3>📦 Shipping Details</h3>
+                <p><strong>Courier Service:</strong></p>
+                <p id="courierService" style="margin:8px 0;">Loading...</p>
+                <p class="note-text">We provide fast and secure shipping to all locations.</p>
+            </div>
+
+            <!-- Testing Warranty -->
+            <div class="card store-card warranty-card">
+                <h3>✅ Testing Warranty</h3>
+                <div id="warrantyDetails">
+                    <p>Loading warranty information...</p>
+                </div>
+            </div>
+
+            <!-- Social Media & Contact -->
+            <div class="card store-card">
+                <h3>📱 Connect With Us</h3>
+                <div class="social-buttons">
+                    <button class="social-btn whatsapp-btn" onclick="openWhatsApp()" title="Chat on WhatsApp">
+                        <span>💬</span> Direct Message
+                    </button>
+                    <button class="social-btn whatsapp-group-btn" onclick="openWhatsAppGroup()" title="Join WhatsApp Group">
+                        <span>👥</span> Group Link
+                    </button>
+                    <button class="social-btn instagram-btn" onclick="openInstagram()" title="Follow on Instagram">
+                        <span>📷</span> Instagram
+                    </button>
+                </div>
+                <p class="note-text">Quick support & latest updates</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- 🔹 LOGOUT SCRIPT -->
@@ -52,10 +156,117 @@ function logout() {
     window.location.href = "../customer-login.html";
 }
 
+function toggleMenu() {
+    const navMenu = document.getElementById('navMenu');
+    navMenu.classList.toggle('active');
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(event) {
+    const navbar = document.querySelector('.navbar');
+    const navMenu = document.getElementById('navMenu');
+    const toggle = document.querySelector('.menu-toggle');
+    
+    if (navbar && !navbar.contains(event.target)) {
+        navMenu.classList.remove('active');
+    }
+});
+
 // Display user name on load
 document.addEventListener('DOMContentLoaded', function() {
     const userName = localStorage.getItem('userName') || 'Customer';
     document.getElementById('userName').textContent = userName;
+    
+    // Update shop status on load and every 2 seconds
+    updateShopStatusBadge();
+    setInterval(updateShopStatusBadge, 2000);
+});
+
+function updateShopStatusBadge() {
+    const shopStatus = localStorage.getItem('shopStatus') === 'open' ? 'open' : 'closed';
+    const badge = document.getElementById('shopStatusBadge');
+    
+    if (shopStatus === 'open') {
+        badge.innerHTML = '<span class="status-indicator">🟢</span><span class="status-label">Shop is Live</span>';
+        badge.classList.add('status-open');
+        badge.classList.remove('status-closed');
+    } else {
+        badge.innerHTML = '<span class="status-indicator">🔴</span><span class="status-label">Shop is Closed</span>';
+        badge.classList.add('status-closed');
+        badge.classList.remove('status-open');
+    }
+}
+
+function displayOffers() {
+    const offers = getOffers();
+    const offersGrid = document.getElementById('offersGrid');
+    
+    if (offers.length === 0) {
+        offersGrid.innerHTML = '<p>No offers available at this moment.</p>';
+        return;
+    }
+    
+    offersGrid.innerHTML = offers.map(offer => `
+        <div class="offer-card">
+            <div class="offer-icon">${offer.icon}</div>
+            <h3>${offer.title}</h3>
+            <p>${offer.description}</p>
+            <div class="offer-badge">${offer.discount} OFF</div>
+        </div>
+    `).join('');
+}
+</script>
+
+<!-- 🎁 OFFERS SCRIPT -->
+<script src="../js/offers-config.js"></script>
+<script>
+    // Display offers on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        displayOffers();
+    });
+</script>
+
+<!-- 🔹 STORE INFO SCRIPTS -->
+<script src="../js/store-config.js"></script>
+<script src="../js/store-info.js"></script>
+
+<!-- 🌙 DARK MODE SCRIPT -->
+<script>
+// Initialize dark mode from localStorage
+function initDarkMode() {
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    const toggle = document.getElementById('darkModeToggle');
+    
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        if (toggle) toggle.classList.add('active');
+        if (toggle) toggle.textContent = '☀️';
+    } else {
+        document.body.classList.remove('dark-mode');
+        if (toggle) toggle.classList.remove('active');
+        if (toggle) toggle.textContent = '🌙';
+    }
+}
+
+// Toggle dark mode
+function toggleDarkMode() {
+    const isDarkMode = document.body.classList.toggle('dark-mode');
+    const toggle = document.getElementById('darkModeToggle');
+    
+    localStorage.setItem('darkMode', isDarkMode);
+    
+    if (isDarkMode) {
+        if (toggle) toggle.classList.add('active');
+        if (toggle) toggle.textContent = '☀️';
+    } else {
+        if (toggle) toggle.classList.remove('active');
+        if (toggle) toggle.textContent = '🌙';
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initDarkMode();
 });
 </script>
 
