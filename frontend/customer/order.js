@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   try {
     const res = await fetch(
-      `http://127.0.0.1:5000/api/orders/my-orders/${email}`
+      `https://ash-mobiles-backend.onrender.com/api/orders/my-orders/${email}`
     );
 
     const orders = await res.json();

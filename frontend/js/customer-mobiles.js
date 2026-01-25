@@ -1,5 +1,5 @@
 async function loadMobiles() {
-    const res = await fetch("http://127.0.0.1:5000/api/mobiles/");
+    const res = await fetch("https://ash-mobiles-backend.onrender.com/api/mobiles/");
     const mobiles = await res.json();
 
     const list = document.getElementById("mobileList");
@@ -32,7 +32,7 @@ function buyMobile(brand, model, price, desc) {
         return;
     }
 
-    fetch('http://127.0.0.1:5000/api/orders/place', {
+    fetch('https://ash-mobiles-backend.onrender.com/api/orders/place', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

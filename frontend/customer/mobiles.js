@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!list) return;
 
     try {
-        const res = await fetch("http://127.0.0.1:5000/api/mobiles/");
+        const res = await fetch("https://ash-mobiles-backend.onrender.com/api/mobiles/");
         const mobiles = await res.json();
 
         list.innerHTML = "";

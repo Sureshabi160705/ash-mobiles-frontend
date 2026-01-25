@@ -2,7 +2,7 @@ function login() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    fetch("http://127.0.0.1:5000/api/auth/login", {
+    fetch("https://ash-mobiles-backend.onrender.com/api/auth/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

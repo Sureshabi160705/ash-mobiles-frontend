@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadAllOrders() {
     try {
-        const res = await fetch("http://127.0.0.1:5000/api/orders/all");
+        const res = await fetch("https://ash-mobiles-backend.onrender.com/api/orders/all");
         allOrders = await res.json();
         displayOrders(allOrders);
     } catch (error) {
@@ -242,7 +242,7 @@ function openOrderDetails(orderId) {
 }
 
 function updateOrderStatus(id, status) {
-    fetch("http://127.0.0.1:5000/api/orders/update-status", {
+    fetch("https://ash-mobiles-backend.onrender.com/api/orders/update-status", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: String(id), status })
@@ -264,7 +264,7 @@ function updateOrderStatus(id, status) {
 }
 
 function updatePaymentStatus(id, status) {
-    fetch("http://127.0.0.1:5000/api/orders/update-payment-status", {
+    fetch("https://ash-mobiles-backend.onrender.com/api/orders/update-payment-status", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: String(id), payment_status: status })
@@ -288,7 +288,7 @@ function updatePaymentStatus(id, status) {
 function deleteOrder(id) {
     if (!confirm('Are you sure you want to delete this order? This action cannot be undone.')) return;
     
-    fetch(`http://127.0.0.1:5000/api/orders/${id}`, {
+    fetch(`https://ash-mobiles-backend.onrender.com/api/orders/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" }
     })

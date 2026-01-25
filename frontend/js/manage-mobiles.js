@@ -1,4 +1,4 @@
-const API_BASE = 'http://127.0.0.1:5000/api/mobiles';
+const API_BASE = 'https://ash-mobiles-backend.onrender.com/api/mobiles';
 
 async function loadMobiles() {
     const list = document.getElementById("mobileList");

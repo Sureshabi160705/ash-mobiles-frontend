@@ -1,4 +1,4 @@
-const API_BASE = 'http://127.0.0.1:5000/api/auth';
+const API_BASE = 'https://ash-mobiles-backend.onrender.com/api/auth';
 
 function showMsg(msg, isError = true) {
     const el = document.getElementById('msg');
